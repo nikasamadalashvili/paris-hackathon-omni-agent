@@ -1,0 +1,66 @@
+services:
+  omni-agent:
+    build:
+      dockerfile: Dockerfile
+    container_name: omni-agent
+    command:
+      ["adk", "web", "--port", "8001", "--host", "0.0.0.0", "--a2a", "--reload"]
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./omni_agent/:/app/omni_agent
+    env_file:
+      - .env
+    environment:
+      - PORT=8001
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+        - action: rebuild
+          path: ./uv.lock
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+
+  playwright-lightpanda:
+    build:
+      dockerfile: Dockerfile
+    container_name: playwright-lightpanda
+    command:
+      [
+        "uv",
+        "run",
+        "uvicorn",
+        "omni_agent.playwright_lightpanda_service:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8003",
+        "--reload",
+      ]
+    ports:
+      - "8003:8003"
+    volumes:
+      - ./omni_agent/:/app/omni_agent
+    env_file:
+      - .env
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /app
+          ignore:
+            - .venv/
+        - action: rebuild
+          path: ./uv.lock
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
