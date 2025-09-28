@@ -4,9 +4,11 @@ import json
 import logging
 
 import mcp.server.stdio  # For running as a stdio server
+from google.adk.agents import InvocationContext
+from google.adk.sessions.in_memory_session_service import InMemorySessionService
 
 # ADK Tool Imports
-from google.adk.tools import AgentTool
+from google.adk.tools import AgentTool, ToolContext
 
 # ADK <-> MCP Conversion Utility
 from google.adk.tools.mcp_tool.conversion_utils import adk_to_mcp_tool_type
@@ -39,7 +41,19 @@ async def call_mcp_tool(
     name: str, arguments: dict
 ) -> list[mcp_types.Content]:  # MCP uses mcp_types.Content
     """MCP handler to execute a tool call requested by an MCP client."""
+    session_service = InMemorySessionService()
+    session = await session_service.create_session(
+        app_name="omni_agent", user_id="test_user"
+    )
 
+    # 2. You need to create the top-level InvocationContext
+    # You have to provide all this metadata yourself.
+    invocation_context = InvocationContext(
+        session_service=session_service,
+        session=session,
+        invocation_id="omni_agent",
+        agent=root_agent,
+    )
     # Check if the requested tool name matches our wrapped ADK tool
     if name == adk_tool_to_expose.name:
         try:
@@ -50,7 +64,7 @@ async def call_mcp_tool(
             # this direct invocation might need more sophisticated handling.
             adk_tool_response = await adk_tool_to_expose.run_async(
                 args=arguments,
-                tool_context=None,
+                tool_context=ToolContext(invocation_context=invocation_context),
             )
             logger.info(f"ADK tool response: {adk_tool_response}")
 
