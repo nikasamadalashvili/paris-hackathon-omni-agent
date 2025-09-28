@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from google.adk import Agent
+from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 
 from omni_agent.core.models import GapQuestionsOutput
@@ -11,7 +11,7 @@ from omni_agent.core.settings import OPENAI_GPT5_NANO_2025_08_07
 MAX_GAP_QUESTIONS: int = 5
 
 
-gap_identification_agent = Agent(
+gap_identification_agent = LlmAgent(
     model=LiteLlm(model=OPENAI_GPT5_NANO_2025_08_07),
     name="GapIdentificationAgent",
     include_contents="none",

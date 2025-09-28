@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-from google.adk import Agent
+from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 
 from ...core.models import EvidenceAdjudicatorOutput
 from ...core.settings import OPENAI_GPT5_NANO_2025_08_07
 
-evidence_adjudicator_agent = Agent(
+evidence_adjudicator_agent = LlmAgent(
     model=LiteLlm(model=OPENAI_GPT5_NANO_2025_08_07),
     name="EvidenceAdjudicatorAgent",
     description=(

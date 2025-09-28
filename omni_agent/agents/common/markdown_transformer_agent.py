@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from google.adk import Agent
+from google.adk.agents import LlmAgent
 from google.adk.models.lite_llm import LiteLlm
 
 from omni_agent.core.models import MarkdownOutput
 from omni_agent.core.settings import OPENAI_GPT5_NANO_2025_08_07
 
 
-def create_markdown_transformer_agent(raw_scraped_input: str, output_key: str) -> Agent:
-    return Agent(
+def create_markdown_transformer_agent(raw_scraped_input: str, output_key: str) -> LlmAgent:
+    return LlmAgent(
         model=LiteLlm(model=OPENAI_GPT5_NANO_2025_08_07),
         name="MarkdownTransformerAgent",
         description="Cleans raw text and converts it into research-ready markdown.",
