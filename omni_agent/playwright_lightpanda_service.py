@@ -15,7 +15,6 @@ async def scrape_urls_with_lightpanda(urls: list[str]) -> dict[str, Any]:
 
     Returns a dict with keys: status, combined_content.
     """
-    return {"status": "success", "combined_content": "test"}
 
     if not urls:
         return {"status": "error", "combined_content": ""}
